@@ -139,7 +139,7 @@ This project is part of my portfolio to demonstrate SQL proficiency for data ana
 
 ### 📌 Stay Connected:
 - **LinkedIn**: [www.linkedin.com/in/joshua-n-a28005216](#)
-- **GitHub**: [Your GitHub Profile](#)
+- **GitHub**: [https://github.com/AlmigthyPushCode](#)
 - **Email**: [joshuajos999@gmail.com](#)
 
 🚀 **Thank you for exploring my SQL project!** 🚀
