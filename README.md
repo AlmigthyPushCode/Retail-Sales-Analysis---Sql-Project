@@ -187,15 +187,6 @@ GROUP BY shift;
 This project is part of my portfolio to demonstrate SQL proficiency for data analysis roles. If you have questions or feedback, feel free to connect with me!
 
 ### 📌 Stay Connected:
-- **LinkedIn**: [Your LinkedIn Profile](#)
-- **GitHub**: [Your GitHub Profile](#)
-- **Email**: [Your Email](#)
-
-🚀 **Thank you for exploring my SQL project!** 🚀
-
-
-
-### 📌 Stay Connected:
 - **LinkedIn**: [www.linkedin.com/in/joshua-n-a28005216](#)
 - **GitHub**: [https://github.com/AlmigthyPushCode](#)
 - **Email**: [joshuajos999@gmail.com](#)
