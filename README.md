@@ -16,7 +16,6 @@ This project demonstrates SQL skills typically used by data analysts to explore,
 2. **Data Cleaning**: Identify and handle missing or incorrect values.
 3. **Exploratory Data Analysis (EDA)**: Understand the dataset through SQL queries.
 4. **Business Analysis**: Use SQL to generate insights about customer behavior and sales performance.
-5. **Performance Optimization**: Improve SQL queries for better efficiency.
 
 ---
 
@@ -34,22 +33,15 @@ CREATE TABLE RETAIL_SALES (
     sale_date DATE NOT NULL,
     sale_time TIME NOT NULL,
     customer_id INT NOT NULL,
-    gender ENUM('Male', 'Female', 'Other') NOT NULL,
-    age INT CHECK (age > 0),
+    gender VARCHAR(20) NOT NULL,
+    age INT,
     category VARCHAR(50) NOT NULL,
-    quantity INT CHECK (quantity > 0),
+    quantity INT,
     price_per_unit DECIMAL(10,2) NOT NULL,
     cogs DECIMAL(10,2) NOT NULL,
-    total_sale DECIMAL(10,2) GENERATED ALWAYS AS (quantity * price_per_unit) STORED
+    total_sale DECIMAL(10,2)
 );
 ```
-
-- **Auto-increment for `transactions_id`** to ensure uniqueness.
-- **`NOT NULL` constraints** to avoid missing data.
-- **`ENUM` for `gender`** for consistent values.
-- **`CHECK` constraints** to prevent invalid data entries.
-- **`DECIMAL(10,2)`** for financial accuracy.
-- **Stored column `total_sale`** to dynamically calculate total sales.
 
 ---
 
@@ -58,16 +50,15 @@ CREATE TABLE RETAIL_SALES (
 #### **Check for Missing Values**
 ```sql
 SELECT * FROM RETAIL_SALES
-WHERE customer_id IS NULL OR gender IS NULL OR age IS NULL OR 
+WHERE customer_id IS NULL OR gender IS NULL OR age IS NULL OR
       category IS NULL OR quantity IS NULL OR price_per_unit IS NULL OR cogs IS NULL;
 ```
 
-#### **Fill Missing Age with Median Age**
+#### **Fill Missing Age with Average Age**
 ```sql
-SET @median_age = (SELECT age FROM RETAIL_SALES ORDER BY age LIMIT 1 OFFSET (SELECT COUNT(*) FROM RETAIL_SALES WHERE age IS NOT NULL) / 2);
-UPDATE RETAIL_SALES SET age = @median_age WHERE age IS NULL;
+SET @avg_age = (SELECT AVG(age) FROM RETAIL_SALES WHERE age IS NOT NULL);
+UPDATE RETAIL_SALES SET age = @avg_age WHERE age IS NULL;
 ```
-
 
 #### **Check Unique Customers and Categories**
 ```sql
@@ -87,19 +78,46 @@ GROUP BY category
 ORDER BY total_revenue DESC;
 ```
 
-#### **2. Monthly Sales Trend (Performance Optimized)**
+#### **2. Total Transactions by Gender**
+```sql
+SELECT gender, COUNT(*) AS total_transactions
+FROM RETAIL_SALES
+GROUP BY gender;
+```
+
+#### **3. Monthly Sales Trend**
 ```sql
 SELECT DATE_FORMAT(sale_date, '%Y-%m') AS month, SUM(total_sale) AS monthly_sales
 FROM RETAIL_SALES
-GROUP BY 1
-ORDER BY 1;
+GROUP BY month
+ORDER BY month;
 ```
 
-
-#### **3. Best-Selling Month Each Year (Indexed for Speed)**
+#### **4. Top 5 Best-Selling Categories**
 ```sql
-CREATE INDEX idx_sale_date ON RETAIL_SALES(sale_date);
+SELECT category, COUNT(*) AS sales_count
+FROM RETAIL_SALES
+GROUP BY category
+ORDER BY sales_count DESC
+LIMIT 5;
+```
 
+#### **5. Customer Purchase Behavior (Avg Spending per Customer)**
+```sql
+SELECT customer_id, AVG(total_sale) AS avg_spending
+FROM RETAIL_SALES
+GROUP BY customer_id
+ORDER BY avg_spending DESC;
+```
+
+#### **6. Identify High-Value Transactions (Above $1000)**
+```sql
+SELECT * FROM RETAIL_SALES
+WHERE total_sale > 1000;
+```
+
+#### **7. Best-Selling Month Each Year**
+```sql
 SELECT year, month, avg_sale
 FROM (
     SELECT EXTRACT(YEAR FROM sale_date) AS year,
@@ -112,6 +130,38 @@ FROM (
 WHERE rank = 1;
 ```
 
+#### **8. Top 5 Customers Based on Sales**
+```sql
+SELECT customer_id, SUM(total_sale) AS total_sales
+FROM RETAIL_SALES
+GROUP BY customer_id
+ORDER BY total_sales DESC
+LIMIT 5;
+```
+
+#### **9. Customer Count Per Category**
+```sql
+SELECT category, COUNT(DISTINCT customer_id) AS unique_customers
+FROM RETAIL_SALES
+GROUP BY category;
+```
+
+#### **10. Sales by Shift (Morning, Afternoon, Evening)**
+```sql
+WITH hourly_sales AS (
+    SELECT *,
+           CASE
+               WHEN HOUR(sale_time) < 12 THEN 'Morning'
+               WHEN HOUR(sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
+               ELSE 'Evening'
+           END AS shift
+    FROM RETAIL_SALES
+)
+SELECT shift, COUNT(*) AS total_orders
+FROM hourly_sales
+GROUP BY shift;
+```
+
 ---
 
 ## **Findings & Insights**
@@ -120,7 +170,6 @@ WHERE rank = 1;
 - **High-Value Transactions**: Some sales exceed $1000, indicating premium purchases.
 - **Sales Trends**: Certain months and time shifts (morning/evening) show peak sales.
 - **Top Customers**: Identifying top buyers helps in targeted marketing.
-- **Performance Gains**: Optimized queries and indexing improved efficiency.
 
 ---
 
@@ -136,6 +185,15 @@ WHERE rank = 1;
 ## **Author & Portfolio**
 
 This project is part of my portfolio to demonstrate SQL proficiency for data analysis roles. If you have questions or feedback, feel free to connect with me!
+
+### 📌 Stay Connected:
+- **LinkedIn**: [Your LinkedIn Profile](#)
+- **GitHub**: [Your GitHub Profile](#)
+- **Email**: [Your Email](#)
+
+🚀 **Thank you for exploring my SQL project!** 🚀
+
+
 
 ### 📌 Stay Connected:
 - **LinkedIn**: [www.linkedin.com/in/joshua-n-a28005216](#)
